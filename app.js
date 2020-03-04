@@ -65,12 +65,12 @@ function addDepartment() {
   prompt([
     {
       type: 'input',
-      name: 'newDep',
+      name: 'newDepartment',
       message: 'What is the name of the department?'
     }
   ])
     .then(({ newDep }) => {
-      db.query(`INSERT INTO departments (department_name) VALUES ('${newDep}')`, (err) => {
+      db.query(`INSERT INTO departments (department_name) VALUES ('${newDepartment}')`, (err) => {
         if (err) throw err;
         console.log('Department Created!');
         init();
