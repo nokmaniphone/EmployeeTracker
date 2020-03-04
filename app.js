@@ -1,7 +1,7 @@
 const db = require('./config/db.js');
 const prompt = require('inquirer').createPromptModule();
 
-function viewAllEmp() {
+function viewAllEmployees() {
   db.query(`SELECT employees.employee_id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id FROM employees`, (err, employees) => {
     if (err) throw err;
     console.log('');
@@ -9,7 +9,7 @@ function viewAllEmp() {
     init();
   })
 }
-function viewAllDep() {
+function viewAllDeparments() {
   db.query('SELECT departments.department_name FROM departments', (err, departments) => {
     if (err) throw err;
     console.log('');
@@ -27,32 +27,32 @@ function viewAllRoles() {
     init();
   })
 }
-function addEmp() {
+function addEmployee() {
   prompt([
     {
       type: 'input',
-      name: 'empFN',
+      name: 'employeeFN',
       message: "What is the Employee's first name?"
     },
     {
       type: 'input',
-      name: 'empLN',
+      name: 'employeeLN',
       message: "What is the Employee's last name?"
     },
     {
       type: 'number',
-      name: 'empRole',
+      name: 'employeeRole',
       message: "What is the Employee's Role ID#?"
     },
     {
       type: 'number',
-      name: 'empMan',
+      name: 'employeeManager',
       message: "Who is the Employee's manager ID#?"
     }
   ])
-    .then(({ empFN, empLN, empRole, empMan }) => {
+    .then(({ employeeFN, employeeLN, employeeRole, employeeManager }) => {
       db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES 
-            ('${empFN}','${empLN}','${empRole}','${empMan}')`, (err) => {
+            ('${employeeFN}','${employeeLN}','${employeeRole}','${employeeManager}')`, (err) => {
         if (err) throw err;
         console.log('Successfully Added!');
         init();
@@ -61,7 +61,7 @@ function addEmp() {
     .catch(e => console.error(e));
 }
 
-function addDep() {
+function addDepartment() {
   prompt([
     {
       type: 'input',
@@ -174,19 +174,19 @@ function init() {
 
     switch (listlist) {
       case "View all employees":
-        viewAllEmp();
+        viewAllEmployees();
         break;
       case "View all departments":
-        viewAllDep();
+        viewAllDeparments();
         break;
       case "View all roles":
         viewAllRoles();
         break;
       case "Add employee":
-        addEmp();
+        addEmployee();
         break;
       case "Add department":
-        addDep();
+        addDepartment();
         break;
       case "Add role":
         addRole();

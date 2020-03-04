@@ -6,3 +6,5 @@
 
 * Run node app.js
 * Pick one of the following choices.
+
+![Database Schema](Assets/employee_db.png)
