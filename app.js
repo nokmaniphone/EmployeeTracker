@@ -1,17 +1,6 @@
 const db = require('./config/db.js');
 const prompt = require('inquirer').createPromptModule();
 
-const initChoices = [
-  "View all employees",
-  "View all departments",
-  "View all roles",
-  "Add employee",
-  "Add department",
-  "Add role",
-  "Update employee role",
-  "Exit"
-];
-
 function viewAllEmp() {
   db.query(`SELECT employees.employee_id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id FROM employees`, (err, employees) => {
     if (err) throw err;
@@ -30,11 +19,11 @@ function viewAllDep() {
 }
 
 function viewAllRoles() {
-  db.query(`SELECT * FROM roles`, (err, role) => {
+  db.query(`SELECT * FROM roles`, (err, roles) => {
     if (err) throw err;
     console.log('');
     console.table(roles);
-    role.forEach(elem => { roles.push(elem) });
+    roles.forEach(elem => { roles.push(elem) });
     init();
   })
 }
@@ -101,6 +90,11 @@ function addRole() {
       type: 'input',
       name: 'newSalary',
       message: 'What is the salary for this role?'
+    },
+    {
+      type: 'input',
+      name: 'newRoleId',
+      message: 'What is the id for this role?'
     }
   ])
     .then(({ newRole, newSalary, newRoleId }) => {
@@ -127,15 +121,15 @@ function updateEmpRole() {
     prompt([
       {
         type: "list",
-        name: "empId",
+        name: "employeeId",
         message: "Which employee's role do you want to update?",
         choices: empChoices
       }
     ]).then((response) => {
-      db.query('SELECT * FROM roles', (err, role) => {
-        const roleChoice = role.map(({ id, role_title }) => ({
+      db.query('SELECT * FROM roles', (err, roles) => {
+        const roleChoice = roles.map(({ role_id, role_title }) => ({
           name: role_title,
-          value: id
+          value: role_id
         }));
 
         prompt([
@@ -145,11 +139,11 @@ function updateEmpRole() {
             message: "Which role do you want to assign the employee?",
             choices: roleChoice
           }
-        ]).then(resp => {
+        ]).then(res => {
 
-          db.query("UPDATE employee SET role_id = ? WHERE id = ?", [resp.roleId, response.empId], (err) => {
+          db.query("UPDATE employees SET role_id = ? WHERE employee_id = ?", [res.roleId, response.employeeId], (err) => {
             if (err) throw err;
-            console.log('Employee role updated!');
+            console.log('Employees role updated!');
             init();
           })
         });
@@ -159,14 +153,22 @@ function updateEmpRole() {
 
 }
 
-
 function init() {
   prompt([
     {
       type: 'list',
       name: 'listlist',
       message: 'What would you like to do?',
-      choices: initChoices
+      choices: [
+        "View all employees",
+        "View all departments",
+        "View all roles",
+        "Add employee",
+        "Add department",
+        "Add role",
+        "Update employee role",
+        "Exit"
+      ]
     }
   ]).then(({ listlist }) => {
 
